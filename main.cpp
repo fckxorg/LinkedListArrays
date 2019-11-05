@@ -1,48 +1,101 @@
 #include <iostream>
+#include <stack>
 
+const int LIST_MAX_SIZE = 20;
 
-template <class T> class LinkedList{
+template<class T>
+class LinkedList {
  private:
-  size_t next[20];
-  size_t previous[20];
-  T data[20];
+  size_t next[LIST_MAX_SIZE] = {};
+  size_t previous[LIST_MAX_SIZE] = {};
+  T data[LIST_MAX_SIZE] = {};
+  std::stack<int> empty_cells;
   size_t n_elements;
+  size_t head;
+  size_t tail;
  public:
-  LinkedList(T head_value, T tail_value)
+  LinkedList () : n_elements(0)
   {
-    data[0] = head_value;
-    data[1] = tail_value;
-
-    next[0] = 1;
-    previous[1] = 0;
-
-    n_elements = 0;
+    for(int i = LIST_MAX_SIZE - 1; i >=0; i--) empty_cells.push(i);
   }
 
   void pushHead (T value)
   {
-    data[n_elements + 2] = value;
-
-    next[n_elements + 2] = next[0];
-    previous[next[0]] = n_elements + 2;
-
-    next[0] = n_elements + 2;
-    previous[n_elements + 2] = 0;
+    int cell = empty_cells.top(); empty_cells.pop();
+    data[cell] = value;
+    if (n_elements)
+      {
+        next[cell] = head;
+        previous[head] = cell;
+      }
+    else
+      {
+        tail = cell;
+      }
+    head = cell;
 
     n_elements++;
   }
 
   void pushTail (T value)
   {
-    data[n_elements + 2] = value;
+    int cell = empty_cells.top(); empty_cells.pop();
+    data[cell] = value;
 
-    previous[n_elements + 2] = previous[1];
-    next[previous[1]] = n_elements + 2;
-
-    previous[1] = n_elements + 2;
-    next[n_elements + 2] = 1;
+    if (n_elements)
+      {
+        previous[cell] = tail;
+        next[tail] = cell;
+      }
+    else
+      {
+        head = cell;
+      }
+    tail = cell;
 
     n_elements++;
+  }
+
+  bool insertAfter (size_t position, T value)
+  {
+    if(position == tail)
+      {
+        pushTail (value);
+        return true;
+      }
+
+    int cell = empty_cells.top(); empty_cells.pop();
+    data[cell] = value;
+
+    previous[next[position]] = cell;
+    next[cell] = next[position];
+
+    next[position] = cell;
+    previous[cell] = position;
+
+    n_elements++;
+    return true;
+  }
+
+  bool insertBefore (size_t position, T value)
+  {
+    if(position == head)
+      {
+        pushHead (value);
+        return true;
+      }
+
+    int cell = empty_cells.top(); empty_cells.pop();
+    data[cell] = value;
+
+    next[previous[position]] = cell;
+    previous[cell] = previous[position];
+
+    previous[position] = cell;
+    next[cell] = position;
+
+    n_elements++;
+    return true;
   }
 
   void dump (const char *filename)
@@ -51,37 +104,39 @@ template <class T> class LinkedList{
 
     fprintf (file, "digraph {\n");
 
-
-    size_t current_node = next[0];
+    size_t current_node = head;
     fprintf (file, "node%d[label=\"{{%d}|{VALUE | %d}}\",shape=record];\n", current_node, current_node, data[current_node]);
     current_node = next[current_node];
-    while (data[current_node] != data[1])
+    bool end = false;
+    while (!end)
       {
+        if(current_node == tail) end = true;
         fprintf (file, "node%d[label=\"{{%d}|{VALUE | %d}}\",shape=record];\n", current_node, current_node, data[current_node]);
         fprintf (file, "node%d -> node%d;\n", current_node, previous[current_node]);
         fprintf (file, "node%d -> node%d;\n", previous[current_node], current_node);
         current_node = next[current_node];
       }
-    fprintf (file, "head -> node%d;\n", next[0]);
-    fprintf (file, "node%d -> tail;\n", previous[1]);
+    fprintf (file, "head -> node%d;\n", head);
+    fprintf (file, "tail -> node%d;\n", tail);
     fprintf (file, "}");
     fclose (file);
     system ("dot -Tpng dump.dot > dump.png");
   }
 
-
 };
 
 int main ()
 {
-  LinkedList<int> my_list = LinkedList (0, 65536);
+  LinkedList<int> my_list;
   my_list.pushTail (10);
   my_list.pushTail (20);
   my_list.pushTail (30);
   my_list.pushTail (40);
   my_list.pushHead (50);
+  my_list.insertAfter (3, 100);
+  my_list.insertBefore (3, 200);
 
-  my_list.dump("dump.dot");
+  my_list.dump ("dump.dot");
 
   return 0;
 }
