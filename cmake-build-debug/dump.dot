@@ -1,0 +1,17 @@
+digraph {
+node6[label="{{6}|{VALUE | 50}}",shape=record];
+node2[label="{{2}|{VALUE | 10}}",shape=record];
+node2 -> node6;
+node6 -> node2;
+node3[label="{{3}|{VALUE | 20}}",shape=record];
+node3 -> node2;
+node2 -> node3;
+node4[label="{{4}|{VALUE | 30}}",shape=record];
+node4 -> node3;
+node3 -> node4;
+node5[label="{{5}|{VALUE | 40}}",shape=record];
+node5 -> node4;
+node4 -> node5;
+head -> node6;
+node5 -> tail;
+}
