@@ -1,23 +1,8 @@
 digraph {
-node4[label="{{4}|{VALUE | 50}}",shape=record];
 node0[label="{{0}|{VALUE | 10}}",shape=record];
-node0 -> node4;
-node4 -> node0;
-node1[label="{{1}|{VALUE | 20}}",shape=record];
-node1 -> node0;
-node0 -> node1;
-node2[label="{{2}|{VALUE | 30}}",shape=record];
-node2 -> node1;
-node1 -> node2;
-node6[label="{{6}|{VALUE | 200}}",shape=record];
-node6 -> node2;
-node2 -> node6;
-node3[label="{{3}|{VALUE | 40}}",shape=record];
-node3 -> node6;
-node6 -> node3;
-node5[label="{{5}|{VALUE | 100}}",shape=record];
-node5 -> node3;
-node3 -> node5;
-head -> node4;
-tail -> node5;
+node2[label="{{2}|{VALUE | 50}}",shape=record];
+node2 -> node0;
+node0 -> node2;
+head -> node0;
+tail -> node2;
 }
