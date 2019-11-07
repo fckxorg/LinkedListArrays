@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stack>
+#include <cstring>
 
 
 template<class T>
@@ -24,6 +25,40 @@ class LinkedList {
     next = new size_t[max_elements]();
     previous = new size_t[max_elements]();
   }
+
+  size_t getHead()
+  {
+    return head;
+  }
+
+  size_t getTail()
+  {
+    return tail;
+  }
+
+  size_t getElementAfter(size_t position)
+  {
+    return next[position];
+  }
+
+  size_t getElementBefore(size_t position)
+  {
+    return previous[position];
+  }
+
+  void clear()
+  {
+    head = 0;
+    tail = 0;
+    n_elements = 0;
+
+    memset(next, 0, max_elements);
+    memset(previous, 0, max_elements);
+    memset (data, 0, max_elements);
+
+    for(int i = max_elements - 1; i >=0; i--) empty_cells.push(i);
+  }
+
 
   void deleteElement(size_t position)
   {
