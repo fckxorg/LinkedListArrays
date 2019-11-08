@@ -1,8 +1,11 @@
 digraph {
-node0[label="{{0}|{VALUE | 10}}",shape=record];
-node2[label="{{2}|{VALUE | 50}}",shape=record];
-node2 -> node0;
-node0 -> node2;
-head -> node0;
-tail -> node2;
+node2[label="{{2}|{{VALUE|30}|{NEXT|1}|{PREVIOUS|0}}}",shape=record];
+node1[label="{{1}|{{VALUE|20}|{NEXT|0}|{PREVIOUS|2}}}",shape=record];
+node1 -> node2;
+node2 -> node1;
+node0[label="{{0}|{{VALUE|10}|{NEXT|0}|{PREVIOUS|1}}}",shape=record];
+node0 -> node1;
+node1 -> node0;
+head -> node2;
+tail -> node0;
 }
