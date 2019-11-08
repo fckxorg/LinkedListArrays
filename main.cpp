@@ -181,15 +181,7 @@ class LinkedList {
         pushHead (value);
         return true;
       }
-
-    int cell = empty_cells.top ();
-    empty_cells.pop ();
-    data[cell] = value;
-
-    interlinkNodes (previous[position], cell);
-    interlinkNodes (cell, position);
-
-    n_elements++;
+    insertAfter (previous[position], value);
     return true;
   }
 
